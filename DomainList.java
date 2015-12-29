@@ -3,7 +3,6 @@ package net.rboeije.enumerable4j;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 
@@ -49,7 +48,6 @@ public class DomainList<T> extends LinkedList<T> implements IEnumerable<T> {
 
     @Override
     public boolean add(T domainObject) {
-        throwIfNull(domainObject);
 
         if (contains(domainObject)) throw new IllegalArgumentException("An item with the same key has already been added.");
 
@@ -62,7 +60,6 @@ public class DomainList<T> extends LinkedList<T> implements IEnumerable<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        throwIfNull(c);
 
         boolean isChanged = false;
         for (T o : c) {
@@ -73,9 +70,6 @@ public class DomainList<T> extends LinkedList<T> implements IEnumerable<T> {
 
     @Override
     public boolean remove(Object o) {
-        if (!(o instanceof DomainObject)) {
-            throw new IllegalArgumentException("Not a DomainObject");
-        }
         T domainObject = (T)o;
         if (super.remove(domainObject)){
             return getRemovedItems().add(domainObject);
@@ -87,15 +81,6 @@ public class DomainList<T> extends LinkedList<T> implements IEnumerable<T> {
         T item = super.remove(index);
         getRemovedItems().add(item);
         return item;
-    }
-
-    public boolean remove(Id id){
-        for (final T o : this) {
-            if (o.getId().equals(id)){
-                return remove(o);
-            }
-        }
-        return false;
     }
 
     @Override
