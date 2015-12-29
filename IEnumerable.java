@@ -99,10 +99,22 @@ public interface IEnumerable<TSource> extends Iterable<TSource> {
     }
 
     default <TList extends List<TSource>> TList toList(Class<TList> listType) {
+
         return getStream().collect(
-                    () -> ClassUtil.createInstance(listType),
-                    List::add,
-                    List::addAll);
+                () -> createInstance(listType),
+                List::add,
+                List::addAll);
+    }
+
+    static <T> T createInstance(Class<T> type) {
+        try {
+            return type.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     default <TResult> Map<TResult, List<TSource>> groupBy(Function<TSource, TResult> expression) {
